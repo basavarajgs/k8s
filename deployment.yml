@@ -1,20 +1,21 @@
-    apiVersion: argoproj.io/v1alpha1
-    kind: Application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
     metadata:
-      name: myapp-argo-application
-      namespace: argocd
+      labels:
+        app: nginx
     spec:
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: myapp
-      source:
-        repoURL: https://github.com/basavarajgs/k8s
-        targetRevision: HEAD
-        path: k8s
-      project: default
-      syncPolicy:
-        syncOptions:
-          - CreateNamespace=true
-        automated:
-          selfHeal: true
-          prune: true
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80 
